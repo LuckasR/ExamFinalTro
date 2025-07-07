@@ -1,0 +1,53 @@
+1. Concepts clés de la gestion de prêt
+Client : La personne ou l’entreprise qui demande un prêt.
+
+Type client : Catégorie à laquelle appartient le client (salarié, étudiant, entreprise…) avec des règles associées.
+
+Prêt : Contrat qui détaille combien le client emprunte, à quel taux, sur quelle durée.
+
+Remboursement : Paiements effectués par le client pour rembourser son prêt.
+
+Frais : Frais de dossier, pénalités en cas de retard, etc.
+
+2. Étapes principales
+Étape 1 : Saisie de la demande de prêt
+Le client fait une demande de prêt avec un montant et une durée.
+
+Le système vérifie que la demande respecte les règles du type_client (plafond, durée max, taux…).
+
+Étape 2 : Validation de la demande
+Un agent (ou système automatique) valide ou refuse la demande.
+
+Le statut du prêt passe de en_attente à valide ou rejete.
+
+Étape 3 : Décaissement du prêt
+Une fois validé, le prêt est débloqué, la somme est versée au client.
+
+La date de début est fixée, le prêt passe en en_cours.
+
+Étape 4 : Remboursement
+Le client rembourse par mensualités (ou autre périodicité).
+
+Chaque paiement est enregistré.
+
+Le système calcule le reste à rembourser (capital + intérêts - remboursements).
+
+Étape 5 : Fin du prêt
+Quand le montant total est remboursé, le prêt est termine.
+
+3. Les calculs importants
+Intérêts = montant * (taux_interet / 100)
+
+Montant total à rembourser = capital emprunté + intérêts
+
+Remboursements cumulés = somme des paiements effectués
+
+Reste à payer = montant total - remboursements cumulés
+
+4. Gestion en base de données
+Table pret stocke la demande, le montant, la durée, le taux, les dates, le statut.
+
+Table remboursement stocke chaque versement.
+
+Vue ou calcul dynamique pour calculer le solde restant.
+
