@@ -3,11 +3,43 @@ create database financier;
 use financier;
 
 
-CREATE TABLE etablissementFinancier (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  nom VARCHAR(100),
-  fonds DECIMAL(15,2) NOT NULL DEFAULT 0
+CREATE TABLE role (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(50) NOT NULL UNIQUE -- ex: 'super_admin', 'gestionnaire', 'operateur'
 );
+
+CREATE TABLE admin (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    mot_de_passe VARCHAR(255) NOT NULL, -- stocker le hash du mot de passe
+    role_id INT NOT NULL,
+    date_creation DATETIME DEFAULT CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (role_id) REFERENCES role(id)
+);
+
+---- Katreto iany 
+CREATE TABLE type_mouvement (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(100) NOT NULL UNIQUE -- ex: 'Apport', 'Remboursement', 'Frais', 'Penalité', ...
+);  
+
+CREATE TABLE mouvements_fond (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    montant DECIMAL(15,2) NOT NULL,
+    date_mouvement DATETIME DEFAULT CURRENT_TIMESTAMP,
+    type_id INT NOT NULL,
+    description VARCHAR(255) NULL,
+    FOREIGN KEY (type_mouvement_id) REFERENCES type_mouvement(id)
+);
+
+CREATE TABLE fond_etablissement (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  montant DECIMAL(15,2) NOT NULL,
+  date_ajout DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
 
 CREATE TABLE type_pret (
   id INT PRIMARY KEY AUTO_INCREMENT,
