@@ -15,29 +15,36 @@ CREATE TABLE admin (
     mot_de_passe VARCHAR(255) NOT NULL, -- stocker le hash du mot de passe
     role_id INT NOT NULL,
     date_creation DATETIME DEFAULT CURRENT_TIMESTAMP,
-    
+
     FOREIGN KEY (role_id) REFERENCES role(id)
 );
 
 ---- Katreto iany 
+ 
+
+
+-- Catégorie principale : dépôt, retrait, transfert
+CREATE TABLE type_categorie (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    type_name VARCHAR(100) NOT NULL UNIQUE -- ex: 'depot', 'retrait', 'transfert'
+);
+INSERT into  type_categorie  (type_name) VALUES ('depot'), ('retrait'), ('transfert') ; 
+
+-- Sous-catégorie : apport, remboursement, etc.
 CREATE TABLE type_mouvement (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    nom VARCHAR(100) NOT NULL UNIQUE -- ex: 'Apport', 'Remboursement', 'Frais', 'Penalité', ...
-);  
+    id_type INT NOT NULL REFERENCES type_categorie(id),
+    nom VARCHAR(100) NOT NULL UNIQUE
+);
 
+-- Table principale pour enregistrer les mouvements
 CREATE TABLE mouvements_fond (
     id INT AUTO_INCREMENT PRIMARY KEY,
     montant DECIMAL(15,2) NOT NULL,
     date_mouvement DATETIME DEFAULT CURRENT_TIMESTAMP,
-    type_id INT NOT NULL,
-    description VARCHAR(255) NULL,
+    type_mouvement_id INT NOT NULL,
+    description VARCHAR(255),
     FOREIGN KEY (type_mouvement_id) REFERENCES type_mouvement(id)
-);
-
-CREATE TABLE fond_etablissement (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  montant DECIMAL(15,2) NOT NULL,
-  date_ajout DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 
