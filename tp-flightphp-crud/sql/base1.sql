@@ -155,16 +155,6 @@ CREATE TABLE statut_pret (
     couleur VARCHAR(7) DEFAULT '#000000'  -- couleur hex pour l'affichage
 );
 
-INSERT INTO statut_pret (nom, description, couleur) VALUES
-('DEMANDE', 'Demande de prêt soumise', '#f39c12'),
-('ETUDE', 'Dossier en cours détude', '#3498db'),
-('APPROUVE', 'Prêt approuvé, en attente de signature', '#27ae60'),
-('REJETE', 'Demande rejetée', '#e74c3c'),
-('ACTIF', 'Prêt actif en cours de remboursement', '#2ecc71'),
-('SOLDE', 'Prêt entièrement remboursé', '#95a5a6'),
-('RETARD', 'Prêt en retard de paiement', '#e67e22'),
-('CONTENTIEUX', 'Prêt en procédure contentieuse', '#8e44ad');
-
 -- Table principale des prêts
 CREATE TABLE pret (
     id INT AUTO_INCREMENT PRIMARY KEY,

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head><title>Test CRUD Client</title></head>
+<body>
+<h1>Clients</h1>
+<ul id="clients"></ul>
+
+<script>
+fetch('http://localhost/clients')
+.then(res => res.json())
+.then(data => {
+    const list = document.getElementById('clients');
+    data.forEach(c => {
+        const li = document.createElement('li');
+        li.textContent = `${c.nom} (${c.email}) - Type: ${c.type_client || 'N/A'}`;
+        list.appendChild(li);
+    });
+});
+</script>
+</body>
+</html>
