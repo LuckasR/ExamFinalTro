@@ -19,6 +19,11 @@ CREATE TABLE admin (
     FOREIGN KEY (role_id) REFERENCES role(id)
 );
 
+
+insert into admin(nom,email,mot_de_passe,role_id) VALUES('admin','admin@gmail.com','admin',1);
+insert into admin(nom,email,mot_de_passe,role_id) VALUES('comptable','compta@gmail.com','compta',2);
+
+
 ---- Katreto iany 
 CREATE TABLE type_mouvement (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -96,3 +101,8 @@ CREATE TABLE pret (
   FOREIGN KEY (id_client) REFERENCES client(id),
   FOREIGN KEY (id_type_pret) REFERENCES type_pret(id)
 );
+
+
+insert into role(nom) values
+('super_admin'),
+('financier');

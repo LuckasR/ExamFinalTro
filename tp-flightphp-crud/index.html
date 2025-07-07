@@ -2,129 +2,59 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Gestion des étudiants</title>
+  <title>Connexion Admin</title>
   <style>
-    body { font-family: sans-serif; padding: 20px; }
-    input, button { margin: 5px; padding: 5px; }
-    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
-    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-    th { background-color: #f2f2f2; }
+    body { font-family: Arial; padding: 20px; }
+    input, button { margin: 10px 0; padding: 8px; width: 100%; }
+    form { max-width: 400px; margin: auto; border: 1px solid #ccc; padding: 20px; border-radius: 5px; }
+    h2 { text-align: center; }
+    #message { color: red; text-align: center; }
   </style>
 </head>
 <body>
-
-  <h1>Gestion des étudiants</h1>
-
-  <div>
-    <input type="hidden" id="id">
-    <input type="text" id="nom" placeholder="Nom">
-    <input type="text" id="prenom" placeholder="Prénom">
-    <input type="email" id="email" placeholder="Email">
-    <input type="number" id="age" placeholder="Âge">
-    <button onclick="ajouterOuModifier()">Ajouter / Modifier</button>
-  </div>
-
-  <table id="table-etudiants">
-    <thead>
-      <tr>
-        <th>ID</th><th>Nom</th><th>Prénom</th><th>Email</th><th>Âge</th><th>Actions</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+  <form onsubmit="login(event)">
+    <h2>Connexion Admin</h2>
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="password" id="mot_de_passe" placeholder="Mot de passe" required>
+    <button type="submit">Se connecter</button>
+    <p id="message"></p>
+  </form>
 
   <script>
     const apiBase = "http://localhost/ExamFinalTro/tp-flightphp-crud/ws";
 
-    function ajax(method, url, data, callback) {
+    function login(e) {
+      e.preventDefault();
+      const email = document.getElementById("email").value;
+      const mot_de_passe = document.getElementById("mot_de_passe").value;
+
+      if (!email || !mot_de_passe) {
+        document.getElementById("message").innerText = "Veuillez remplir tous les champs.";
+        return;
+      }
+
+      const data = `email=${encodeURIComponent(email)}&mot_de_passe=${encodeURIComponent(mot_de_passe)}&role_id=${role_id}`;
+
       const xhr = new XMLHttpRequest();
-      xhr.open(method, apiBase + url, true);
+      xhr.open("POST", apiBase + "/login", true);
       xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
       xhr.onreadystatechange = () => {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-          callback(JSON.parse(xhr.responseText));
+        if (xhr.readyState === 4) {
+          try {
+            const res = JSON.parse(xhr.responseText);
+            if (xhr.status === 200) {
+              alert("Connexion réussie !");
+              window.location.href = apiBase+"/app/views/dashboardAdmin.html"; 
+            } else {
+              document.getElementById("message").innerText = res.message || "Erreur de connexion";
+            }
+          } catch (e) {
+            document.getElementById("message").innerText = "Erreur : Réponse invalide du serveur";
+          }
         }
       };
       xhr.send(data);
     }
-function chargerEtudiants() {
-  ajax("GET", "/etudiants", null, (data) => {
-    console.log('Données reçues:', data);
-    const tbody = document.querySelector("#table-etudiants tbody");
-    tbody.innerHTML = "";
-
-    if (!Array.isArray(data)) {
-      console.error('Erreur : data n’est pas un tableau');
-      return;
-    }
-
-    data.forEach(e => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${e.id}</td>
-        <td>${e.nom}</td>
-        <td>${e.prenom}</td>
-        <td>${e.email}</td>
-        <td>${e.age}</td>
-        <td>
-          <button onclick='remplirFormulaire(${JSON.stringify(e)})'>✏️</button>
-          <button onclick='supprimerEtudiant(${e.id})'>🗑️</button>
-        </td>
-      `;
-      tbody.appendChild(tr);
-    });
-  });
-}
-
-
-    function ajouterOuModifier() {
-      const id = document.getElementById("id").value;
-      const nom = document.getElementById("nom").value;
-      const prenom = document.getElementById("prenom").value;
-      const email = document.getElementById("email").value;
-      const age = document.getElementById("age").value;
-
-      const data = `nom=${encodeURIComponent(nom)}&prenom=${encodeURIComponent(prenom)}&email=${encodeURIComponent(email)}&age=${age}`;
-
-      if (id) {
-        ajax("PUT", `/etudiants/${id}`, data, () => {
-          resetForm();
-          chargerEtudiants();
-        });
-      } else {
-        ajax("POST", "/etudiants", data, () => {
-          resetForm();
-          chargerEtudiants();
-        });
-      }
-    }
-
-    function remplirFormulaire(e) {
-      document.getElementById("id").value = e.id;
-      document.getElementById("nom").value = e.nom;
-      document.getElementById("prenom").value = e.prenom;
-      document.getElementById("email").value = e.email;
-      document.getElementById("age").value = e.age;
-    }
-
-    function supprimerEtudiant(id) {
-      if (confirm("Supprimer cet étudiant ?")) {
-        ajax("DELETE", `/etudiants/${id}`, null, () => {
-          chargerEtudiants();
-        });
-      }
-    }
-
-    function resetForm() {
-      document.getElementById("id").value = "";
-      document.getElementById("nom").value = "";
-      document.getElementById("prenom").value = "";
-      document.getElementById("email").value = "";
-      document.getElementById("age").value = "";
-    }
-
-    chargerEtudiants();
   </script>
-
 </body>
 </html>
